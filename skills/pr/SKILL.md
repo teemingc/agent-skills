@@ -102,16 +102,22 @@ Run `pr.sh ascii` on each changeset you wrote or edited, then commit it along wi
 
 ## 4. Open the PR
 
-**Title:** short, all lowercase, no punctuation, 8 words at most. For a single-commit PR, the commit message usually works.
+**Title:** `<prefix>: <summary>`, since a squash merge turns it into the commit on the base branch.
+
+- The prefix is `fix` for a bug fix, `feat` for a new feature, `breaking` for a breaking change, `docs` for documentation only, or `chore` for anything else, such as tooling, CI or dependencies.
+- The summary is short, all lowercase except identifiers, with no trailing punctuation, and 8 words at most, e.g. `fix: keep query string on trailing slash redirect`.
+- Wrap public API names in backticks, e.g. ``feat: add `reroute` hook``.
 
 **Body:** a few short paragraphs at most.
 
+- Start with a `Closes #123` line for each issue the PR resolves.
+- If the repo has a PR template, keep its structure. Put the description where the template asks for one and keep any checklist word for word, ticking the items the PR satisfies. Never delete a checklist.
 - Lead with what changes for the person using it.
 - Show, don't tell. A before and after code sample, command output or screenshot beats a paragraph of prose.
 - Don't write "what", "why", "how", "changes", "verification", "test plan" or "notes" sections. Use headings only when the PR makes several distinct changes that each need their own description, with one heading per change.
 - Don't mention files, lines, functions or variables. The diff shows them.
 - Don't mention tests. Every PR changes tests, so it's noise. The exception is a new kind of test, such as the first visual regression suite.
-- Add `Closes #123` when the PR resolves an issue.
+- For a stacked PR, open the description with `Stacked on top of <pr url>`.
 - No attribution, "Generated with" footer or session link.
 
 ````md
@@ -124,19 +130,19 @@ Users reported same-day ranges being cleared.
 - Added 4 tests in `range.test.ts`, all 312 pass
 
 <!-- good -->
+Closes #231
+
 Picking the same start and end date now selects that single day instead of clearing the range.
 
 ```ts
 picker.select("2026-09-21", "2026-09-21");
 picker.range; // before: null, after: { start: "2026-09-21", end: "2026-09-21" }
 ```
-
-Closes #231
 ````
 
 GitHub has no API for uploading images. When a screenshot would help, capture it, send it to the user, and ask them to drag it into the description. Don't commit images to the repo just to host them.
 
-Write the body to a file in the scratchpad and check it with `pr.sh ascii <file>`, then run:
+Write the body to a file in the scratchpad and check it with `pr.sh ascii <file>`, ignoring matches inside a copied template checklist, then run:
 
 ```bash
 git push -u origin HEAD
